@@ -3,18 +3,19 @@ import FileInput from './components/FileInput';
 
 function App() {
   const [files, setFiles] = useState({
-    oldFile: {},
-    newFile: {},
+    oldFile: JSON.parse(localStorage.getItem('oldFile')) || {},
+    newFile: JSON.parse(localStorage.getItem('newFile')) || {},
   });
 
-  const handleChange = (e) => {
-    const fileName = e.target.name;
+  const handleChange = (event) => {
+    const fileName = event.target.name;
 
     const fileReader = new FileReader();
-    fileReader.readAsText(e.target.files[0], 'UTF-8');
+    fileReader.readAsText(event.target.files[0], 'UTF-8');
     fileReader.onload = (e) => {
-      const obj = JSON.parse(e.target.result);
+      localStorage.setItem(fileName, e.target.result);
 
+      const obj = JSON.parse(e.target.result);
       setFiles({ ...files, [fileName]: obj });
     };
   };
