@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+}
+
+$color-blue-dark: #02072F;
+$color-blue-light: #060F4F;
+$color-blue-icon: #006BEA;
+$color-white: #FFF;
+
+body {
+  background-color: $color-blue-dark;
+}
+
+@mixin desktop {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  @include desktop {
+    margin: 0 auto;
+  }
+}
+
+.translate_zone {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem 0;
+
+  @include desktop {
+    flex-direction: row;
+  }
+  
+  .file-input {
+    width: 90%;
+    max-width: 500px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    &:first-child {
+      border-bottom: 2px solid $color-blue-light;
+
+      @include desktop {
+        border-bottom: 0;
+        border-right: 2px solid $color-blue-light;
+      }
+    }
+
+    &__input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+
+      & + label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: $color-white;
+        cursor: pointer; 
+
+        svg {
+          width: 52px;
+          height: 52px;
+          fill: $color-blue-icon;
+        }
+      }
+
+      &:focus + label, & + label:hover { opacity: 0.8; }
+    }
+
+  }
+}
