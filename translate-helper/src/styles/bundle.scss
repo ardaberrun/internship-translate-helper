@@ -98,3 +98,28 @@ body {
 
   }
 }
+
+.translate {
+  width: 90%;
+  max-width: 500px;
+  height: 400px;
+  padding: 1rem;
+  overflow: hidden;
+  overflow-y: auto;
+
+  &:first-child {
+    border-bottom: 2px solid $color-blue-light;
+
+    @include desktop {
+      border-bottom: 0;
+      border-right: 2px solid $color-blue-light;
+    }
+  }
+
+  span {
+    display: block;
+    color: $color-white;
+    margin-top: 0.3rem;
+  }
+
+}
