@@ -9,9 +9,10 @@
 }
 
 $color-blue-dark: #02072F;
-$color-blue-light: #060F4F;
-$color-blue-icon: #006BEA;
+$color-blue: #060F4F;
+$color-blue-light: #006BEA;
 $color-white: #FFF;
+$color-green: #55A362;
 
 body {
   background-color: $color-blue-dark;
@@ -60,11 +61,11 @@ body {
 
 
     &:first-child {
-      border-bottom: 2px solid $color-blue-light;
+      border-bottom: 2px solid $color-blue;
 
       @include desktop {
         border-bottom: 0;
-        border-right: 2px solid $color-blue-light;
+        border-right: 2px solid $color-blue;
       }
     }
 
@@ -89,7 +90,7 @@ body {
         svg {
           width: 52px;
           height: 52px;
-          fill: $color-blue-icon;
+          fill: $color-blue-light;
         }
       }
 
@@ -108,11 +109,11 @@ body {
   overflow-y: auto;
 
   &:first-child {
-    border-bottom: 2px solid $color-blue-light;
+    border-bottom: 2px solid $color-blue;
 
     @include desktop {
       border-bottom: 0;
-      border-right: 2px solid $color-blue-light;
+      border-right: 2px solid $color-blue;
     }
   }
 
@@ -123,3 +124,22 @@ body {
   }
 
 }
+
+.btn {
+  font-size: 1.05em;
+  padding: 0.75rem 1.25rem;
+  background-color: $color-blue-light;
+  border: none;
+  outline: none;
+  color: $color-white;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: -2px 4px 23px -1px rgba(0,0,0,0.6);
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.changes-modify { background-color: $color-blue-light; }
+.changes-add { background-color: $color-green; }

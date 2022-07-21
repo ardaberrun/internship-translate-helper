@@ -6,6 +6,33 @@ function App() {
     oldFile: JSON.parse(localStorage.getItem('oldFile')) || {},
     newFile: JSON.parse(localStorage.getItem('newFile')) || {},
   });
+  const [changes, setChanges] = useState({
+    modified: [],
+    added: [],
+  });
+
+  const compareFiles = () => {
+    const { oldFile, newFile } = files;
+
+    if (!Object.keys(oldFile).length || !Object.keys(newFile).length) return;
+
+    const changesObj = Object.keys(newFile).reduce(
+      (acc, curr) => {
+        if (oldFile[curr] !== undefined) {
+          if (oldFile[curr] !== newFile[curr]) {
+            acc.modified.push(curr);
+          }
+        } else {
+          acc.added.push(curr);
+        }
+
+        return acc;
+      },
+      { modified: [], added: [] }
+    );
+
+    setChanges(changesObj);
+  };
 
   const handleChange = (event) => {
     const fileName = event.target.name;
@@ -20,11 +47,26 @@ function App() {
     };
   };
 
+  const applyClass = (key) => {
+    if (changes.modified.includes(key)) {
+      return 'changes-modify';
+    }
+
+    if (changes.added.includes(key)) {
+      return 'changes-add';
+    }
+
+    return '';
+  };
+
   const showFileContent = (file) => {
     return (
       <div className="translate">
         {Object.keys(file).map((key, i) => (
-          <span key={`${key}-${i}`}>{`"${key}": "${file[key]}"`}</span>
+          <span
+            className={applyClass(key)}
+            key={`${key}-${i}`}
+          >{`"${key}": "${file[key]}"`}</span>
         ))}
       </div>
     );
@@ -52,6 +94,9 @@ function App() {
           showFileContent(files.newFile)
         )}
       </div>
+      <button className="btn" onClick={compareFiles}>
+        Compare
+      </button>
     </div>
   );
 }
