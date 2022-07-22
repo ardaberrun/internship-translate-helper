@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import FileInput from './components/FileInput';
+import Translation from './components/Translation';
 
 function App() {
   const [files, setFiles] = useState({
@@ -35,6 +35,8 @@ function App() {
   };
 
   const handleChange = (event) => {
+    setChanges({ modified: [], added: [] });
+
     const fileName = event.target.name;
 
     const fileReader = new FileReader();
@@ -47,52 +49,21 @@ function App() {
     };
   };
 
-  const applyClass = (key) => {
-    if (changes.modified.includes(key)) {
-      return 'changes-modify';
-    }
-
-    if (changes.added.includes(key)) {
-      return 'changes-add';
-    }
-
-    return '';
-  };
-
-  const showFileContent = (file) => {
-    return (
-      <div className="translate">
-        {Object.keys(file).map((key, i) => (
-          <span
-            className={applyClass(key)}
-            key={`${key}-${i}`}
-          >{`"${key}": "${file[key]}"`}</span>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div className="container">
-      <div className="translate_zone">
-        {!Object.keys(files.oldFile).length ? (
-          <FileInput
-            file="oldFile"
-            title="Upload Old File"
-            onChange={handleChange}
-          />
-        ) : (
-          showFileContent(files.oldFile)
-        )}
-        {!Object.keys(files.newFile).length ? (
-          <FileInput
-            file="newFile"
-            title="Upload New File"
-            onChange={handleChange}
-          />
-        ) : (
-          showFileContent(files.newFile)
-        )}
+      <div className="translation_container">
+        <Translation
+          changes={changes}
+          file={files.oldFile}
+          handleChange={handleChange}
+          fileType="old"
+        />
+        <Translation
+          changes={changes}
+          file={files.newFile}
+          handleChange={handleChange}
+          fileType="new"
+        />
       </div>
       <button className="btn" onClick={compareFiles}>
         Compare
