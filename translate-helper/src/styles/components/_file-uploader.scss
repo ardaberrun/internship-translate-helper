@@ -1,0 +1,58 @@
+.file-uploader {
+  &.upload-first {
+    width: 90%;
+    max-width: 500px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &:first-child {
+    border-bottom: 2px solid $color-blue;
+
+    @include desktop {
+      border-bottom: 0;
+      border-right: 2px solid $color-blue;
+    }
+  }
+
+  &__input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  &__label {
+    font-weight: bold;
+    color: $color-white;
+    text-transform: capitalize;
+    cursor: pointer;
+
+    &.label-upload-first {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+
+      svg {
+        width: 52px;
+        height: 52px;
+        fill: $color-blue-light;
+      }
+    }
+
+    &.label-upload-change {
+      font-size: 0.75rem;
+      padding: 0.75em 1em;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

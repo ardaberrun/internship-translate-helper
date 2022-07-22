@@ -1,0 +1,62 @@
+.translation_container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include desktop {
+    flex-direction: row;
+  }
+}
+
+.translation {
+  width: 90%;
+  max-width: 500px;
+  height: 100%;
+  margin: 2rem 0;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    text-transform: capitalize;
+
+    h2 {
+      font-size: 1.25rem;
+      color: $color-white;
+    }
+  }
+
+  &__body {
+    height: 400px;
+    margin-top: 2rem;
+    padding: 1rem;
+    overflow: hidden;
+    overflow-y: auto;
+
+    span {
+      display: block;
+      color: $color-white;
+      margin-top: 0.3rem;
+    }
+
+    .changes-modify {
+      background-color: $color-blue-light;
+    }
+    .changes-add {
+      background-color: $color-green;
+    }
+  }
+
+  &:first-child &__body {
+    border-bottom: 2px solid $color-blue;
+
+    @include desktop {
+      border-bottom: 0;
+      border-right: 2px solid $color-blue;
+    }
+  }
+}
