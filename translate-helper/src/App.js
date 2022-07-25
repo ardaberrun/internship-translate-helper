@@ -69,7 +69,14 @@ function App() {
           fileType="new"
         />
       </div>
-      <button className="btn" onClick={compareFiles}>
+      <button
+        className="btn"
+        onClick={compareFiles}
+        disabled={
+          !Object.keys(files.oldFile).length ||
+          !Object.keys(files.newFile).length
+        }
+      >
         Compare
       </button>
     </div>

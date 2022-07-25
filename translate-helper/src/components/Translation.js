@@ -4,18 +4,18 @@ import FileUploader from './FileUploader';
 function Translation({ file, fileType, handleChange, changes }) {
   const applyClass = (key) => {
     if (changes.removed.includes(key)) {
-      return 'changes-removed';
+      return 'changes changes-removed';
     }
-    
+
     if (changes.modified.includes(key)) {
-      return 'changes-modify';
+      return 'changes changes-modify';
     }
 
     if (changes.added.includes(key)) {
-      return 'changes-add';
+      return 'changes changes-add';
     }
 
-    return '';
+    return 'changes';
   };
 
   return !Object.keys(file).length ? (

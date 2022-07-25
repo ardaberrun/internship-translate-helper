@@ -1,15 +1,20 @@
 .btn {
   font-size: 1.05em;
   padding: 0.75rem 1.25rem;
-  background-color: $color-blue-close-to-purple;
+  background-color: $color-blue-dark;
   border: none;
   outline: none;
   color: $color-white;
   border-radius: 4px;
   cursor: pointer;
-  box-shadow: -2px 4px 23px -1px rgba(0, 0, 0, 0.6);
+  // box-shadow: -2px 4px 23px -1px rgba(0, 0, 0, 0.6);
 
   &:hover {
     opacity: 0.9;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.7;
   }
 }

@@ -10,16 +10,17 @@
   width: 10px;
 }
 
-::-webkit-scrollbar-track {
-  background: $color-blue-close-to-purple;
-}
+// ::-webkit-scrollbar-track {
+//   background: $color-white;
+// }
 
 ::-webkit-scrollbar-thumb {
-  background: $color-blue;
+  background-color: $color-blue-dark;
+  border-radius: 10px;
 }
 
 body {
-  background-color: $color-blue-dark;
+  background-color: $color-background;
 }
 
 .container {
@@ -31,8 +32,10 @@ body {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  gap: 2rem;
 
   @include desktop {
     margin: 0 auto;
+    gap: 0;
   }
 }
