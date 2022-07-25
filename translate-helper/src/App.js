@@ -7,6 +7,7 @@ function App() {
     newFile: JSON.parse(localStorage.getItem('newFile')) || {},
   });
   const [changes, setChanges] = useState({
+    removed: [],
     modified: [],
     added: [],
   });
@@ -16,26 +17,29 @@ function App() {
 
     if (!Object.keys(oldFile).length || !Object.keys(newFile).length) return;
 
-    const changesObj = Object.keys(newFile).reduce(
-      (acc, curr) => {
-        if (oldFile[curr] !== undefined) {
-          if (oldFile[curr] !== newFile[curr]) {
-            acc.modified.push(curr);
-          }
+    const allFiles = { ...oldFile, ...newFile };
+    const changesObj = Object.keys(allFiles).reduce(
+      (acc, key) => {
+        if (newFile[key] === undefined) {
+          acc.removed.push(key);
+        } else if (oldFile[key] === undefined) {
+          acc.added.push(key);
         } else {
-          acc.added.push(curr);
+          if (oldFile[key] !== newFile[key]) {
+            acc.modified.push(key);
+          }
         }
 
         return acc;
       },
-      { modified: [], added: [] }
+      { removed: [], modified: [], added: [] }
     );
 
     setChanges(changesObj);
   };
 
   const handleChange = (event) => {
-    setChanges({ modified: [], added: [] });
+    setChanges({ removed: [], modified: [], added: [] });
 
     const fileName = event.target.name;
 

@@ -3,6 +3,10 @@ import FileUploader from './FileUploader';
 
 function Translation({ file, fileType, handleChange, changes }) {
   const applyClass = (key) => {
+    if (changes.removed.includes(key)) {
+      return 'changes-removed';
+    }
+    
     if (changes.modified.includes(key)) {
       return 'changes-modify';
     }
