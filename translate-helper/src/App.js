@@ -61,12 +61,14 @@ function App() {
           file={files.oldFile}
           handleChange={handleChange}
           fileType="old"
+          setFiles={setFiles}
         />
         <Translation
           changes={changes}
           file={files.newFile}
           handleChange={handleChange}
           fileType="new"
+          setFiles={setFiles}
         />
       </div>
       <button

@@ -1,5 +1,6 @@
 .file-uploader {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
   &.upload-first {
     width: 90%;
     max-width: 500px;
@@ -11,16 +12,17 @@
     @include desktop {
       margin: 2rem 0;
     }
-  }
 
-  &:first-child {
-    border-bottom: 2px solid $color-blue-dark;
-
-    @include desktop {
-      border-bottom: 0;
-      border-right: 2px solid $color-blue-dark;
+    &:first-child {
+      border-bottom: 2px solid $color-blue-dark;
+  
+      @include desktop {
+        border-bottom: 0;
+        border-right: 2px solid $color-blue-dark;
+      }
     }
   }
+
 
   &__input {
     width: 0.1px;

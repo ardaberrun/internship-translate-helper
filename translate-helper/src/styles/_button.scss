@@ -9,6 +9,15 @@
   cursor: pointer;
   // box-shadow: -2px 4px 23px -1px rgba(0, 0, 0, 0.6);
 
+  &-download {
+    padding: 0.75em 1em;
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: capitalize;
+    text-decoration: none;
+    margin-top: 0.25rem;
+  }
+
   &:hover {
     opacity: 0.9;
   }
