@@ -29,6 +29,12 @@
       font-size: 1.25rem;
       color: $color-blue-dark;
     }
+
+    &-buttons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
   }
 
   &__body {
@@ -41,14 +47,14 @@
 
     span {
       display: block;
-      color: $color-blue-dark;
       font-weight: 500;
-      margin-top: 0.3rem;
       padding: 3px;
     }
 
     .changes {
       color: $color-black;
+      display: flex;
+      margin-top: 0.3rem;
 
       &-removed {
         background-color: $color-red;
@@ -58,6 +64,15 @@
       }
       &-add {
         background-color: $color-green;
+      }
+
+      input {
+        background-color: transparent;
+        width: 100%;
+        font-weight: 500;
+        padding: 3px;
+        outline: none;
+        border: 0;
       }
     }
   }
