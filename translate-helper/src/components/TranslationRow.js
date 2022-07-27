@@ -52,7 +52,7 @@ function TranslationRow({
         <input
           onChange={(e) => setInputValue(e.target.value)}
           name={translateKey}
-          value={inputValue}
+          value={inputValue || ''}
           autoFocus={true}
           type="text"
         />
