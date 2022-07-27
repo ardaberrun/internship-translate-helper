@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TranslationRow from './TranslationRow';
 import FileUploader from './FileUploader';
 
 function Translation({ file, fileType, handleChange, changes, setFiles }) {
   const [editableKey, setEditableKey] = useState('');
+  const [filterFile, setFilterFile] = useState(file);
+  const [toggle, setToggle] = useState(false);
+
+  useEffect(() => {
+    if (!editableKey) setFilterFile(file);
+  }, [file, editableKey]);
+
+  useEffect(() => {
+    if (toggle) {
+      const filterObject = Object.fromEntries(
+        Object.entries(file).filter(([_, value]) => !value)
+      );
+      
+      setFilterFile(filterObject);
+    } else {
+      setFilterFile(file);
+    }
+  }, [toggle]);
 
   const handleEdit = (key) => {
     setEditableKey(key);
     // setChanges({removed: [], modified: [], added: []});
   };
-  
+
   return !Object.keys(file).length ? (
     <FileUploader
       fileName={`${fileType.toLowerCase()}File`}
@@ -38,9 +56,16 @@ function Translation({ file, fileType, handleChange, changes, setFiles }) {
             Download
           </a>
         </div>
+        <div className="toggle">
+          <span>Show Empty Translations</span>
+          <label className="switch">
+            <input type="checkbox" onClick={() => setToggle(!toggle)} />
+            <span className="slider round" />
+          </label>
+        </div>
       </div>
       <div className="translation__body">
-        {Object.keys(file).map((key, i) => (
+        {Object.keys(filterFile).map((key, i) => (
           <TranslationRow
             key={`${key}-${i}`}
             translateKey={key}
