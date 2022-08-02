@@ -1,34 +1,23 @@
-import { ReactComponent as FileUploadLogo } from '../assets/upload.svg';
+import { ReactComponent as FileUploadIcon } from '../assets/upload.svg';
 
-function FileUploader({ fileName, fileType, onChange, uploadType }) {
-  return uploadType === 'first' ? (
-    <div className="file-uploader upload-first">
+function FileUploader({ fileName, onChange, uploadType, title, languageId }) {
+  return (
+    <div className={`file-uploader ${uploadType === 'icon' && 'upload-icon'}`}>
       <input
         type="file"
         name={fileName}
-        id={fileName}
+        id={`${languageId}-${fileName}`}
         className="file-uploader__input"
-        onChange={onChange}
-      />
-      <label className="file-uploader__label label-upload-first" htmlFor={fileName}>
-        <FileUploadLogo />
-        Upload {fileType} File
-      </label>
-    </div>
-  ) : (
-    <div className="file-uploader">
-      <input
-        type="file"
-        name={fileName}
-        id={fileName}
-        className="file-uploader__input"
-        onChange={onChange}
+        onChange={(e) => onChange(e, languageId)}
       />
       <label
-        className="btn file-uploader__label label-upload-change"
-        htmlFor={fileName}
+        className={`file-uploader__label label-upload-${
+          uploadType === 'icon' ? 'icon' : 'button btn'
+        }`}
+        htmlFor={`${languageId}-${fileName}`}
       >
-        Change {fileType} File
+        {uploadType === 'icon' && <FileUploadIcon />}
+        {title}
       </label>
     </div>
   );

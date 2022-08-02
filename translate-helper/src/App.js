@@ -1,19 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 import Translation from './components/Translation';
+import reducer from './utils/reducer';
+import types from './utils/types';
+
+const initialState = {
+  languages: [
+    {
+      id: '1',
+      languageId: {
+        current: 'en',
+        error: false,
+        errorMessage: ''
+      },
+      files: { oldFile: {}, newFile: {} },
+    },
+  ],
+  activeFiles: { oldFile: {}, newFile: {} },
+  activeLanguage: '1',
+};
 
 function App() {
-  const [files, setFiles] = useState({
-    oldFile: JSON.parse(localStorage.getItem('oldFile')) || {},
-    newFile: JSON.parse(localStorage.getItem('newFile')) || {},
-  });
+  const [fileState, dispatch] = useReducer(reducer, initialState);
   const [changes, setChanges] = useState({
     removed: [],
     modified: [],
     added: [],
   });
 
+  // useEffect(() => {
+  //   localStorage.setItem('fileState', JSON.stringify(fileState));
+  // }, [fileState]);
+
+  useEffect(() => {
+    setChanges({
+      removed: [],
+      modified: [],
+      added: [],
+    });
+
+    dispatch({ type: types.CHANGE_ACTIVE_FILES });
+
+    // localStorage.setItem('activeLanguage', activeLanguage);
+  }, [fileState.activeLanguage]);
+
   const compareFiles = () => {
-    const { oldFile, newFile } = files;
+    const { oldFile, newFile } = fileState.activeFiles;
 
     if (!Object.keys(oldFile).length || !Object.keys(newFile).length) return;
 
@@ -38,7 +69,7 @@ function App() {
     setChanges(changesObj);
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event, languageId) => {
     setChanges({ removed: [], modified: [], added: [] });
 
     const fileName = event.target.name;
@@ -46,10 +77,19 @@ function App() {
     const fileReader = new FileReader();
     fileReader.readAsText(event.target.files[0], 'UTF-8');
     fileReader.onload = (e) => {
-      localStorage.setItem(fileName, e.target.result);
-
       const obj = JSON.parse(e.target.result);
-      setFiles({ ...files, [fileName]: obj });
+
+      if (fileState.activeLanguage === languageId) {
+        dispatch({
+          type: types.SET_ACTIVE_FILES,
+          payload: { fileName, obj },
+        });
+      }
+
+      dispatch({
+        type: types.CHANGE_LANGUAGE,
+        payload: { languageId, fileName, uploadedFile: obj },
+      });
     };
   };
 
@@ -57,26 +97,28 @@ function App() {
     <div className="container">
       <div className="translation_container">
         <Translation
+          file={fileState.activeFiles.oldFile}
           changes={changes}
-          file={files.oldFile}
+          fileState={fileState}
+          dispatch={dispatch}
           handleChange={handleChange}
           fileType="old"
-          setFiles={setFiles}
         />
         <Translation
+          file={fileState.activeFiles.newFile}
           changes={changes}
-          file={files.newFile}
+          fileState={fileState}
+          dispatch={dispatch}
           handleChange={handleChange}
           fileType="new"
-          setFiles={setFiles}
         />
       </div>
       <button
         className="btn"
         onClick={compareFiles}
         disabled={
-          !Object.keys(files.oldFile).length ||
-          !Object.keys(files.newFile).length
+          !Object.keys(fileState.activeFiles.oldFile).length ||
+          !Object.keys(fileState.activeFiles.newFile).length
         }
       >
         Compare
