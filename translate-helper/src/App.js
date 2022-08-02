@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer } from 'react';
+import { useEffect, useState, useReducer, useMemo } from 'react';
 import Translation from './components/Translation';
 import reducer from './utils/reducer';
 import types from './utils/types';
@@ -42,6 +42,13 @@ function App() {
 
     // localStorage.setItem('activeLanguage', activeLanguage);
   }, [fileState.activeLanguage]);
+
+  const missingKeys = useMemo(() => {
+    const activeFileKeys = Object.keys(fileState.activeFiles.newFile);
+    const allKeys = fileState.languages.map(language => Object.keys(language.files.newFile)).flat();
+
+    return [...new Set(allKeys.filter(key => !activeFileKeys.includes(key)))];
+  }, [fileState.activeFiles.newFile]);
 
   const compareFiles = () => {
     const { oldFile, newFile } = fileState.activeFiles;
@@ -111,6 +118,7 @@ function App() {
           dispatch={dispatch}
           handleChange={handleChange}
           fileType="new"
+          missingKeys={missingKeys}
         />
       </div>
       <button

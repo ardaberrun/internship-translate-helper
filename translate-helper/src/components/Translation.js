@@ -11,14 +11,14 @@ function Translation({
   changes,
   fileState,
   dispatch,
+  missingKeys,
 }) {
   const [editableKey, setEditableKey] = useState('');
   const [toggle, setToggle] = useState(false);
   const { languages, activeLanguage } = fileState;
 
-  const isError = languages.find(
-    (language) => language.id === activeLanguage
-  )?.languageId.error;
+  const isError = languages.find((language) => language.id === activeLanguage)
+    ?.languageId.error;
 
   const handleEdit = (key) => {
     setEditableKey(key);
@@ -39,6 +39,10 @@ function Translation({
     dispatch({ type: types.CHECK_LANGUAGE_ID });
   };
 
+  const addMissingKey = (missingKey) => {
+    dispatch({type: types.SET_ACTIVE_FILES, payload: { fileName: 'newFile', obj: {...file, [missingKey]: ''}}})
+  }
+
   return (
     <div className="translation">
       <div className="translation__header">
@@ -48,7 +52,7 @@ function Translation({
             {fileType === 'old' && (
               <>
                 {languages.length - 1 === i && (
-                  <button className="add-btn" onClick={addLanguage}>
+                  <button className="btn-add" onClick={addLanguage}>
                     +
                   </button>
                 )}
@@ -144,6 +148,13 @@ function Translation({
         </ul>
       ) : (
         <ul className="translation__body">
+          {fileType === 'new' &&
+            missingKeys.map((key) => (
+              <li className="translation__body-missing-key">
+                <span>{key}:</span>
+                <button className="btn-add" onClick={() => addMissingKey(key)}>+</button>
+              </li>
+            ))}
           {Object.keys(file).map((key, i) => (
             <TranslationRow
               key={`${key}-${i}`}
