@@ -1,30 +1,40 @@
 import React, { useState, useEffect } from 'react';
+import types from '../utils/types';
 
 function TranslationRow({
   translateKey,
   translateValue,
   editableKey,
   handleEdit,
-  setFiles,
   fileName,
   file,
-  changes
+  changes,
+  languageId,
+  dispatch,
 }) {
-  const [inputValue, setInputValue] = useState(translateValue);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    if(inputValue !== translateValue) {
-      const debounce = setTimeout(() => { 
-        const changedObject = {...file, [translateKey]: inputValue};
+    setInputValue(translateValue);
+  }, [file]);
 
-        setFiles((prev) => ({ ...prev, [fileName]: changedObject }));
-        localStorage.setItem(fileName, JSON.stringify(changedObject));
-      }, 500);
-  
-      return () => {
-        clearTimeout(debounce);
-      };
-    }
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      const changedObject = { ...file, [translateKey]: inputValue };
+
+      dispatch({
+        type: types.SET_ACTIVE_FILES,
+        payload: { fileName, obj: changedObject },
+      });
+      dispatch({
+        type: types.CHANGE_LANGUAGE,
+        payload: { languageId, fileName, uploadedFile: changedObject },
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(debounce);
+    };
   }, [inputValue]);
 
   const applyClass = (key) => {
@@ -44,7 +54,10 @@ function TranslationRow({
   };
 
   return (
-    <div className={applyClass(translateKey)} onClick={() => handleEdit(translateKey)}>
+    <li
+      className={applyClass(translateKey)}
+      onClick={() => handleEdit(translateKey)}
+    >
       <span>{`${translateKey}: `}</span>
       {!editableKey ? (
         <span>{`${translateValue}`}</span>
@@ -57,7 +70,7 @@ function TranslationRow({
           type="text"
         />
       )}
-    </div>
+    </li>
   );
 }
 
