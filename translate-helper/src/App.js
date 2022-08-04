@@ -20,16 +20,20 @@ const initialState = {
 };
 
 function App() {
-  const [fileState, dispatch] = useReducer(reducer, initialState);
+  const [fileState, dispatch] = useReducer(
+    reducer,
+    JSON.parse(localStorage.getItem('fileState')) || initialState
+  );
+
   const [changes, setChanges] = useState({
     removed: [],
     modified: [],
     added: [],
   });
 
-  // useEffect(() => {
-  //   localStorage.setItem('fileState', JSON.stringify(fileState));
-  // }, [fileState]);
+  useEffect(() => {
+    localStorage.setItem('fileState', JSON.stringify(fileState));
+  }, [fileState]);
 
   useEffect(() => {
     setChanges({
@@ -40,15 +44,15 @@ function App() {
 
     dispatch({ type: types.CHANGE_ACTIVE_FILES });
 
-    // localStorage.setItem('activeLanguage', activeLanguage);
+    localStorage.setItem('activeLanguage', fileState.activeLanguage);
   }, [fileState.activeLanguage]);
 
   const missingKeys = useMemo(() => {
     const activeFileKeys = Object.keys(fileState.activeFiles.newFile);
-    const allKeys = fileState.languages.map(language => Object.keys(language.files.newFile)).flat();
+    const allKeys = fileState.languages.map((language) => Object.keys(language.files.newFile)).flat();
 
-    return [...new Set(allKeys.filter(key => !activeFileKeys.includes(key)))];
-  }, [fileState.activeFiles.newFile]);
+    return [...new Set(allKeys.filter((key) => !activeFileKeys.includes(key)))];
+  }, [fileState.activeFiles.newFile, fileState.languages]);
 
   const compareFiles = () => {
     const { oldFile, newFile } = fileState.activeFiles;

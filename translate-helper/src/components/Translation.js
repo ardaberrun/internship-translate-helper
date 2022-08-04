@@ -30,6 +30,18 @@ function Translation({
     dispatch({ type: types.CHECK_LANGUAGE_ID });
   };
 
+  const removeLanguage = (newLanguageId, languageId) => {
+      dispatch({ type: types.REMOVE_LANGUAGE, payload: { languageId } });
+
+      if(activeLanguage === languageId) {
+        dispatch({
+          type: types.SET_ACTIVE_LANGUAGE,
+          payload: newLanguageId,
+        });
+      }
+
+  };
+
   const handleInputChange = (e, id) => {
     dispatch({
       type: types.CHANGE_LANGUAGE_ID,
@@ -40,8 +52,11 @@ function Translation({
   };
 
   const addMissingKey = (missingKey) => {
-    dispatch({type: types.SET_ACTIVE_FILES, payload: { fileName: 'newFile', obj: {...file, [missingKey]: ''}}})
-  }
+    dispatch({
+      type: types.SET_ACTIVE_FILES,
+      payload: { fileName: 'newFile', obj: { ...file, [missingKey]: '' } },
+    });
+  };
 
   return (
     <div className="translation">
@@ -60,14 +75,13 @@ function Translation({
                   name="langs"
                   id={language.id}
                   type="radio"
-                  defaultChecked={i === 0}
+                  checked={language.id === activeLanguage}
                   onChange={(e) => {
                     dispatch({
                       type: types.SET_ACTIVE_LANGUAGE,
-                      payload: language.id,
+                      payload: e.target.id,
                     });
                     setEditableKey('');
-                    // setInputValue(language.languageId.current);
                   }}
                 />
                 <input
@@ -102,6 +116,19 @@ function Translation({
             >
               Download
             </a>
+            {fileType === 'new' &&  languages.length > 1 && (
+              <button
+                className="btn-remove"
+                onClick={() =>
+                  removeLanguage(
+                    languages[i-1]?.id || languages[i+1]?.id,
+                    language.id
+                  )
+                }
+              >
+                x
+              </button>
+            )}
           </div>
         ))}
         <div className="toggle">
@@ -152,7 +179,9 @@ function Translation({
             missingKeys.map((key) => (
               <li className="translation__body-missing-key">
                 <span>{key}:</span>
-                <button className="btn-add" onClick={() => addMissingKey(key)}>+</button>
+                <button className="btn-add" onClick={() => addMissingKey(key)}>
+                  +
+                </button>
               </li>
             ))}
           {Object.keys(file).map((key, i) => (
