@@ -18,6 +18,14 @@ const reducer = (state, action) => {
         ],
       };
 
+    case types.REMOVE_LANGUAGE:
+      return {
+        ...state,
+        languages: state.languages.filter(
+          (language) => language.id !== action.payload.languageId
+        ),
+      };
+
     case types.CHANGE_LANGUAGE:
       return {
         ...state,
