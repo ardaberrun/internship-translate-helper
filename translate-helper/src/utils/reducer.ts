@@ -1,6 +1,86 @@
 import types from './types';
 
-const reducer = (state, action) => {
+type Files = {
+  'oldFile': {[key: string]: string};
+  'newFile': {[key: string]: string};
+};
+
+type Language = {
+  id: string;
+  languageId: {
+    current: string;
+    error: boolean;
+    errorMessage: string;
+  };
+  files: Files;
+};
+
+export type FileState = {
+  languages: Array<Language>;
+  activeFiles: Files;
+  activeLanguage: string;
+};
+
+type AddLanguageAction = {
+  type: types.ADD_LANGUAGE;
+};
+
+type RemoveLanguageAction = {
+  type: types.REMOVE_LANGUAGE;
+  payload: {
+    languageId: string;
+  };
+};
+
+type ChangeLanguageAction = {
+  type: types.CHANGE_LANGUAGE;
+  payload: {
+    fileName: string;
+    uploadedFile: {};
+    languageId: string;
+  };
+};
+
+type ChangeActiveFiles = {
+  type: types.CHANGE_ACTIVE_FILES;
+};
+
+type SetActiveFiles = {
+  type: types.SET_ACTIVE_FILES;
+  payload: {
+    fileName: string;
+    obj: {};
+  };
+};
+
+type SetActiveLanguage = {
+  type: types.SET_ACTIVE_LANGUAGE;
+  payload: string;
+};
+
+type ChangeLanguageId = {
+  type: types.CHANGE_LANGUAGE_ID;
+  payload: {
+    id: string;
+    value: string;
+  };
+};
+
+type CheckLanguageId = {
+  type: types.CHECK_LANGUAGE_ID;
+};
+
+type ReducerActions =
+  | AddLanguageAction
+  | RemoveLanguageAction
+  | ChangeLanguageAction
+  | ChangeActiveFiles
+  | SetActiveFiles
+  | SetActiveLanguage
+  | ChangeLanguageId
+  | CheckLanguageId;
+
+const reducer = (state: FileState, action: ReducerActions) => {
   switch (action.type) {
     case types.ADD_LANGUAGE:
       return {
@@ -10,8 +90,9 @@ const reducer = (state, action) => {
           {
             id: Math.random().toString(),
             languageId: {
-              ...state.languages.languageId,
               current: '',
+              error: false,
+              errorMessage: '',
             },
             files: { oldFile: {}, newFile: {} },
           },
