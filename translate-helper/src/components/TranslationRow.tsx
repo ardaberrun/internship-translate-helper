@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import types from '../utils/types';
 
+type TranslationRowProps = {
+  translateKey: string;
+  translateValue: string;
+  editableKey: boolean;
+  handleEdit: (key: string) => void;
+  fileName: string;
+  file: { [key: string]: string };
+  changes: { removed: string[], modified: string[], added: string[] };
+  languageId: string;
+  dispatch: React.Dispatch<any>;
+}
+
 function TranslationRow({
   translateKey,
   translateValue,
@@ -11,7 +23,7 @@ function TranslationRow({
   changes,
   languageId,
   dispatch,
-}) {
+}: TranslationRowProps) {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -37,7 +49,7 @@ function TranslationRow({
     };
   }, [inputValue]);
 
-  const applyClass = (key) => {
+  const applyClass = (key: string) => {
     if (changes.removed.includes(key)) {
       return 'changes changes-removed';
     }

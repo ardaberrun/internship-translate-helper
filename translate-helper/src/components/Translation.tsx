@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import TranslationRow from './TranslationRow';
 import FileUploader from './FileUploader';
 import types from '../utils/types';
 import { ReactComponent as ErrorIcon } from '../assets/error.svg';
+import { FileState } from '../utils/reducer';
+
+type TranslationProps = {
+  file: {[key: string]: string};
+  fileType: Lowercase<'old' | 'new'>;
+  handleChange: (event: ChangeEvent, languageId: string) => void;
+  changes: {removed: string[], modified: string[], added: string[]};
+  fileState: FileState;
+  dispatch: React.Dispatch<any>;
+  missingKeys?: string[];
+}
 
 function Translation({
   file,
@@ -12,7 +23,7 @@ function Translation({
   fileState,
   dispatch,
   missingKeys,
-}) {
+}: TranslationProps) {
   const [editableKey, setEditableKey] = useState('');
   const [toggle, setToggle] = useState(false);
   const { languages, activeLanguage } = fileState;
@@ -20,7 +31,7 @@ function Translation({
   const isError = languages.find((language) => language.id === activeLanguage)
     ?.languageId.error;
 
-  const handleEdit = (key) => {
+  const handleEdit = (key: string) => {
     setEditableKey(key);
     // setChanges({removed: [], modified: [], added: []});
   };
@@ -30,7 +41,7 @@ function Translation({
     dispatch({ type: types.CHECK_LANGUAGE_ID });
   };
 
-  const removeLanguage = (newLanguageId, languageId) => {
+  const removeLanguage = (newLanguageId: string, languageId: string) => {
       dispatch({ type: types.REMOVE_LANGUAGE, payload: { languageId } });
 
       if(activeLanguage === languageId) {
@@ -42,16 +53,16 @@ function Translation({
 
   };
 
-  const handleInputChange = (e, id) => {
+  const handleInputChange = (e: ChangeEvent, id: string) => {
     dispatch({
       type: types.CHANGE_LANGUAGE_ID,
-      payload: { id, value: e.target.value },
+      payload: { id, value: (e.target as HTMLInputElement).value },
     });
 
     dispatch({ type: types.CHECK_LANGUAGE_ID });
   };
 
-  const addMissingKey = (missingKey) => {
+  const addMissingKey = (missingKey: string) => {
     dispatch({
       type: types.SET_ACTIVE_FILES,
       payload: { fileName: 'newFile', obj: { ...file, [missingKey]: '' } },
@@ -96,11 +107,11 @@ function Translation({
               </>
             )}
             <FileUploader
-              fileName={`${fileType.toLowerCase()}File`}
+              fileName={`${fileType}File`}
               onChange={handleChange}
               uploadType="button"
               title={`${
-                Object.keys(language.files[`${fileType.toLowerCase()}File`])
+                Object.keys(fileType=== 'old' ? language.files['oldFile'] : language.files['newFile'])
                   .length
                   ? 'Change'
                   : 'Upload'
@@ -108,7 +119,7 @@ function Translation({
               languageId={language.id}
             />
             <a
-              download={`${fileType.toLowerCase()}File.json`}
+              download={`${fileType}File.json`}
               href={`data:text/json;charset=utf-8,${encodeURIComponent(
                 JSON.stringify(file)
               )}`}
@@ -147,7 +158,7 @@ function Translation({
       ) : !Object.keys(file).length ? (
         <div className="translation__body p-0">
           <FileUploader
-            fileName={`${fileType.toLowerCase()}File`}
+            fileName={`${fileType}File`}
             onChange={handleChange}
             uploadType="icon"
             title={`Upload ${fileType} File`}
@@ -166,7 +177,7 @@ function Translation({
                 changes={changes}
                 editableKey={editableKey === key}
                 handleEdit={handleEdit}
-                fileName={`${fileType.toLowerCase()}File`}
+                fileName={`${fileType}File`}
                 file={file}
                 languageId={activeLanguage}
                 dispatch={dispatch}
@@ -176,7 +187,7 @@ function Translation({
       ) : (
         <ul className="translation__body">
           {fileType === 'new' &&
-            missingKeys.map((key) => (
+            missingKeys?.map((key) => (
               <li className="translation__body-missing-key">
                 <span>{key}:</span>
                 <button className="btn-add" onClick={() => addMissingKey(key)}>
@@ -192,7 +203,7 @@ function Translation({
               changes={changes}
               editableKey={editableKey === key}
               handleEdit={handleEdit}
-              fileName={`${fileType.toLowerCase()}File`}
+              fileName={`${fileType}File`}
               file={file}
               languageId={activeLanguage}
               dispatch={dispatch}

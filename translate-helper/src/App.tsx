@@ -1,9 +1,9 @@
-import { useEffect, useState, useReducer, useMemo } from 'react';
+import { useEffect, useState, useReducer, useMemo, ChangeEvent } from 'react';
 import Translation from './components/Translation';
-import reducer from './utils/reducer';
+import reducer, {FileState} from './utils/reducer';
 import types from './utils/types';
 
-const initialState = {
+const initialState : FileState = {
   languages: [
     {
       id: '1',
@@ -19,13 +19,19 @@ const initialState = {
   activeLanguage: '1',
 };
 
-function App() {
-  const [fileState, dispatch] = useReducer(
-    reducer,
-    JSON.parse(localStorage.getItem('fileState')) || initialState
-  );
+type ChangeState = {
+  removed: string[];
+  modified: string[];
+  added: string[];
+}
 
-  const [changes, setChanges] = useState({
+function App() {
+  const [fileState, dispatch] = useReducer(reducer, initialState, () => {
+    const localState = localStorage.getItem('fileState');
+    return localState ? JSON.parse(localState) : initialState;
+  });
+  
+  const [changes, setChanges] = useState<ChangeState>({
     removed: [],
     modified: [],
     added: [],
@@ -47,7 +53,9 @@ function App() {
     localStorage.setItem('activeLanguage', fileState.activeLanguage);
   }, [fileState.activeLanguage]);
 
-  const missingKeys = useMemo(() => {
+  
+
+  const missingKeys: string[] = useMemo(() => {
     const activeFileKeys = Object.keys(fileState.activeFiles.newFile);
     const allKeys = fileState.languages.map((language) => Object.keys(language.files.newFile)).flat();
 
@@ -60,7 +68,7 @@ function App() {
     if (!Object.keys(oldFile).length || !Object.keys(newFile).length) return;
 
     const allFiles = { ...oldFile, ...newFile };
-    const changesObj = Object.keys(allFiles).reduce(
+    const changesObj = Object.keys(allFiles).reduce<ChangeState>(
       (acc, key) => {
         if (newFile[key] === undefined) {
           acc.removed.push(key);
@@ -80,15 +88,15 @@ function App() {
     setChanges(changesObj);
   };
 
-  const handleChange = (event, languageId) => {
+  const handleChange = (event: ChangeEvent, languageId: string) => {
     setChanges({ removed: [], modified: [], added: [] });
 
-    const fileName = event.target.name;
+    const fileName: string = (event.target as HTMLInputElement).name;
 
-    const fileReader = new FileReader();
-    fileReader.readAsText(event.target.files[0], 'UTF-8');
+    const fileReader : FileReader = new FileReader();
+    fileReader.readAsText((event.target as HTMLInputElement).files![0], 'UTF-8');
     fileReader.onload = (e) => {
-      const obj = JSON.parse(e.target.result);
+      const obj = JSON.parse(fileReader.result as string);
 
       if (fileState.activeLanguage === languageId) {
         dispatch({
@@ -102,6 +110,7 @@ function App() {
         payload: { languageId, fileName, uploadedFile: obj },
       });
     };
+  
   };
 
   return (
