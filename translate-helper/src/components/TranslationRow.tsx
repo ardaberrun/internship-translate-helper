@@ -69,6 +69,7 @@ function TranslationRow({
     <li
       className={applyClass(translateKey)}
       onClick={() => handleEdit(translateKey)}
+      data-testid="translation-row-list-item"
     >
       <span>{`${translateKey}: `}</span>
       {!editableKey ? (
@@ -80,6 +81,7 @@ function TranslationRow({
           value={inputValue || ''}
           autoFocus={true}
           type="text"
+          data-testid="editable-key"
         />
       )}
     </li>

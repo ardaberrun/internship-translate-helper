@@ -8,7 +8,6 @@ import { FileState } from '../utils/reducer';
 type TranslationProps = {
   file: {[key: string]: string};
   fileType: Lowercase<'old' | 'new'>;
-  handleChange: (event: ChangeEvent, languageId: string) => void;
   changes: {removed: string[], modified: string[], added: string[]};
   fileState: FileState;
   dispatch: React.Dispatch<any>;
@@ -18,7 +17,6 @@ type TranslationProps = {
 function Translation({
   file,
   fileType,
-  handleChange,
   changes,
   fileState,
   dispatch,
@@ -87,6 +85,7 @@ function Translation({
                   id={language.id}
                   type="radio"
                   checked={language.id === activeLanguage}
+                  data-testid={`${language.id}-radio`}
                   onChange={(e) => {
                     dispatch({
                       type: types.SET_ACTIVE_LANGUAGE,
@@ -100,15 +99,15 @@ function Translation({
                   type="text"
                   value={language.languageId.current}
                   onChange={(e) => handleInputChange(e, language.id)}
+                  data-testid={`language-name-input-${language.id}`}
                 />
                 {language.languageId.error && (
-                  <span>{language.languageId.errorMessage}</span>
+                  <span data-testid={`error-message-${language.id}`}>{language.languageId.errorMessage}</span>
                 )}
               </>
             )}
             <FileUploader
               fileName={`${fileType}File`}
-              onChange={handleChange}
               uploadType="button"
               title={`${
                 Object.keys(fileType=== 'old' ? language.files['oldFile'] : language.files['newFile'])
@@ -117,6 +116,8 @@ function Translation({
                   : 'Upload'
               } ${fileType} File`}
               languageId={language.id}
+              activeLanguage={activeLanguage}
+              dispatch={dispatch}
             />
             <a
               download={`${fileType}File.json`}
@@ -130,6 +131,7 @@ function Translation({
             {fileType === 'new' &&  languages.length > 1 && (
               <button
                 className="btn-remove"
+                data-testid={`remove-language-btn-${language.id}`}
                 onClick={() =>
                   removeLanguage(
                     languages[i-1]?.id || languages[i+1]?.id,
@@ -145,7 +147,7 @@ function Translation({
         <div className="toggle">
           <span>Show Empty Translations</span>
           <label className="switch">
-            <input type="checkbox" onClick={() => setToggle(!toggle)} />
+            <input value={`${toggle}`} type="checkbox" data-testid={`toggle-${fileType}`} onClick={() => setToggle(!toggle)} />
             <span className="slider round" />
           </label>
         </div>
@@ -159,10 +161,11 @@ function Translation({
         <div className="translation__body p-0">
           <FileUploader
             fileName={`${fileType}File`}
-            onChange={handleChange}
             uploadType="icon"
             title={`Upload ${fileType} File`}
             languageId={activeLanguage}
+            activeLanguage={activeLanguage}
+            dispatch={dispatch}
           />
         </div>
       ) : toggle ? (
@@ -190,7 +193,7 @@ function Translation({
             missingKeys?.map((key) => (
               <li className="translation__body-missing-key">
                 <span>{key}:</span>
-                <button className="btn-add" onClick={() => addMissingKey(key)}>
+                <button data-testid={`${key}-add`} className="btn-add" onClick={() => addMissingKey(key)}>
                   +
                 </button>
               </li>

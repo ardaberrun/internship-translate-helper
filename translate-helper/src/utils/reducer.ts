@@ -21,6 +21,23 @@ export type FileState = {
   activeLanguage: string;
 };
 
+export const initialState : FileState = {
+  languages: [
+    {
+      id: '1',
+      languageId: {
+        current: 'en',
+        error: false,
+        errorMessage: ''
+      },
+      files: { oldFile: {}, newFile: {} },
+    },
+  ],
+  activeFiles: { oldFile: {}, newFile: {} },
+  activeLanguage: '1',
+};
+
+
 type AddLanguageAction = {
   type: types.ADD_LANGUAGE;
 };
@@ -80,7 +97,7 @@ type ReducerActions =
   | ChangeLanguageId
   | CheckLanguageId;
 
-const reducer = (state: FileState, action: ReducerActions) => {
+export const reducer = (state: FileState = initialState, action: ReducerActions) => {
   switch (action.type) {
     case types.ADD_LANGUAGE:
       return {
